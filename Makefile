@@ -1,22 +1,15 @@
 # Variables
-VERSION=v0.0.1
-NAME=salt-exporter
-BIN=bin
-BUILD_USER := $(shell id -u -n)
-BUILD_DATE := $(shell date)
-
 GO    := GO19VENDOREXPERIMENT=1 GOOS=linux GOARCH=amd64 go
 PROMU := $(GOPATH)/bin/$(NAME)
 pkgs   = $(shell $(GO) list ./... | grep -v /vendor/)
 
 PREFIX                  ?= $(shell pwd)
 BIN_DIR                 ?= $(shell pwd)
-DOCKER_REPO             ?= fxinnovation
-DOCKER_IMAGE_NAME       ?= exporter-template
-DOCKER_IMAGE_TAG        ?= $(subst /,-,$(shell git rev-parse --abbrev-ref HEAD))
+#DOCKER_REPO             ?= fxinnovation
+#DOCKER_IMAGE_NAME       ?= exporter-template
+#DOCKER_IMAGE_TAG        ?= $(subst /,-,$(shell git rev-parse --abbrev-ref HEAD))
 
 # Default target
-.PHONY: all
 all: format build test
 
 test: build
@@ -39,10 +32,6 @@ dependencies:
 	rm -rf Gopkg.lock vendor/
 	dep ensure
 
-#build: promu
-#	@echo ">> building binaries"
-#	@$(GO) build --prefix $(PREFIX) -o ${BIN}/${NAME} -v -ldflags="-X 'saltstack_exporter/build.Version=${VERSION}' -X 'saltstack_exporter/build.User=${BUILD_USER}' -X 'saltstack_exporter/build.Time=${BUILD_DATE}'"
-
 build: promu
 	@echo ">> building binaries"
 	@$(PROMU) build --prefix $(PREFIX)
@@ -51,13 +40,13 @@ tarball: promu
 	@echo ">> building release tarball"
 	@$(PROMU) tarball --prefix $(PREFIX) $(BIN_DIR)
 
-docker:
-	@echo ">> building docker image"
-	@docker build -t "$(DOCKER_REPO)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)" .
+#docker:
+#	@echo ">> building docker image"
+#	@docker build -t "$(DOCKER_REPO)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)" .
 
-dockerlint:
-	@echo ">> linting Dockerfile"
-	@docker run --rm -i hadolint/hadolint < Dockerfile
+#dockerlint:
+#	@echo ">> linting Dockerfile"
+#	@docker run --rm -i hadolint/hadolint < Dockerfile
 
 promu:
 	@GOOS=$(shell uname -s | tr A-Z a-z) \
@@ -65,7 +54,7 @@ promu:
 		$(GO) get -u github.com/prometheus/promu
 
 run:
-	go run
+	@$(GO) run
 
 clean:
 	rm -f bin/*

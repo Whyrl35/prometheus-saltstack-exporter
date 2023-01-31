@@ -17,4 +17,7 @@ bin/*
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
+
+# Don't get the config.yml
+config.yml

@@ -9,7 +9,7 @@ type Exporter struct {
 	saltUrl, saltUser, saltPassword string
 }
 
-func NewExporter(saltUrl string, saltUser, saltPassword string) *Exporter {
+func NewExporter(saltUrl string, saltUser string, saltPassword string) *Exporter {
 	return &Exporter{
 		saltUrl:      saltUrl,
 		saltUser:     saltUser,
