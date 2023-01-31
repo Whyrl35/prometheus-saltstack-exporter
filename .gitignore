@@ -4,6 +4,11 @@
 *.dll
 *.so
 *.dylib
+.*.swp
+core
+*.cgo*.go
+bin/*
+.env
 
 # Test binary, built with `go test -c`
 *.test
