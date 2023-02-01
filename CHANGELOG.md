@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Bug Fixes
+- adding missing configuration file
 - change the config file extension to .yaml
 
 
