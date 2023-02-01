@@ -1,6 +1,6 @@
 # Variables
 GO    := GO19VENDOREXPERIMENT=1 GOOS=linux GOARCH=amd64 go
-PROMU := $(GOPATH)/bin/$(NAME)
+PROMU := $(GOPATH)/bin/promu
 pkgs   = $(shell $(GO) list ./... | grep -v /vendor/)
 
 PREFIX                  ?= $(shell pwd)
