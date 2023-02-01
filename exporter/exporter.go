@@ -36,7 +36,7 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 			"saltUrl":      e.saltUrl,
 			"saltUser":     e.saltPassword,
 			"saltPassword": "***",
-		}).Error("Unable to retreive Masters information: %v", err)
+		}).Error(err)
 	}
 
 	for k, v := range masters.status {
@@ -50,7 +50,7 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 			"saltUrl":      e.saltUrl,
 			"saltUser":     e.saltPassword,
 			"saltPassword": "***",
-		}).Error("Unable to retreive Minions information: %v", err)
+		}).Error(err)
 	}
 	ch <- prometheus.MustNewConstMetric(minionsCount, prometheus.GaugeValue, float64(minions.count))
 }

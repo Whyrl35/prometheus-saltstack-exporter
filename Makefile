@@ -28,13 +28,9 @@ vet:
 	@echo ">> vetting code"
 	@$(GO) vet $(pkgs)
 
-dependencies:
-	rm -rf Gopkg.lock vendor/
-	dep ensure
-
 build: promu
 	@echo ">> building binaries"
-	@$(PROMU) build --prefix $(PREFIX)
+	@$(PROMU) build
 
 tarball: promu
 	@echo ">> building release tarball"
@@ -54,7 +50,7 @@ promu:
 		$(GO) get -u github.com/prometheus/promu
 
 run:
-	@$(GO) run
+	@$(GO) run .
 
 clean:
 	rm -f bin/*

@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
-	"prometheus-saltstack-exporter/exporter"
+	"github.com/Whyrl35/prometheus-saltstack-exporter/exporter"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
