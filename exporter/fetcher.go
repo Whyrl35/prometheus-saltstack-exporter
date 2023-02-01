@@ -214,7 +214,7 @@ func (f *Fetcher) Masters() (*Masters, error) {
 	return &masters, nil
 }
 
-// Faire une fonction qui retourne le status d'un master (parametres)
-// Faire une fonction qui retourne l'etat du dernier highstate/apply pour un agent
-// Faire une function qui retourne le compte de highstate/apply total par agent
-// c.f. les possibiltés avec l'API
+// TODO: Faire une fonction qui retourne le status d'un master (parametres)
+// TODO: Faire une fonction qui retourne l'etat du dernier highstate/apply pour un agent
+// TODO: Faire une function qui retourne le compte de highstate/apply total par agent
+// TODO: c.f. les possibiltés avec l'API

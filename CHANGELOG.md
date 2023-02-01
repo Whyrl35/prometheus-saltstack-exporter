@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- change the config file extension to .yaml
+
 
 <a name="v0.1.3"></a>
 ## [v0.1.3] - 2023-02-01

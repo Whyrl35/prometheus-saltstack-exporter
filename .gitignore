@@ -20,4 +20,4 @@ bin/*
 vendor/
 
 # Don't get the config.yml
-config.yml
+config.yaml
