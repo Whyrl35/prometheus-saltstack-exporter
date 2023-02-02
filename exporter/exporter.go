@@ -27,7 +27,15 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 
 func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	f := NewFetcher(e.saltUrl, e.saltUser, e.saltPassword)
-	f.Login()
+
+	err := f.Login()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"saltUrl":      e.saltUrl,
+			"saltUser":     e.saltPassword,
+			"saltPassword": "***",
+		}).Fatal(err)
+	}
 
 	// Check master status
 	masters, err := f.Masters()
@@ -53,4 +61,23 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 		}).Error(err)
 	}
 	ch <- prometheus.MustNewConstMetric(minionsCount, prometheus.GaugeValue, float64(minions.count))
+
+	// Check jobs status
+	// Status to be checked : state.highstate / state.apply with Arguments = []
+	// For one given Job check the Minions list and the Result for this minion
+	jobs, err := f.Jobs()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"saltUrl":      e.saltUrl,
+			"saltUser":     e.saltPassword,
+			"saltPassword": "***",
+		}).Error(err)
+	}
+
+	for _, job := range *jobs {
+		if job.function == "state.highstate" || job.function == "state.apply" {
+			// call a function that get the result for the job (success or not) then compute a metrics on it
+			log.Debug()
+		}
+	}
 }

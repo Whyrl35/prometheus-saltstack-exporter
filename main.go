@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
+
 	"github.com/Whyrl35/prometheus-saltstack-exporter/exporter"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -35,7 +36,8 @@ type Config struct {
  * Init helper to pre-configure some metrics
  */
 func init() {
-	//prometheus.MustRegister(version.NewCollector("prometheus-saltstack-exporter"))
+	// Don't initialized the default version metrics as version don't report correctly, need to check LD_FLAGS
+	// prometheus.MustRegister(version.NewCollector("prometheus-saltstack-exporter"))
 }
 
 /*
@@ -49,7 +51,7 @@ func main() {
 	// Configuring the logger
 	if *hasDebug {
 		log.SetLevel(log.DebugLevel)
-		//log.SetReportCaller(true)
+		log.SetReportCaller(true)
 	}
 
 	log.SetFormatter(&log.TextFormatter{
@@ -74,13 +76,16 @@ func main() {
 
 	http.Handle(*metricsPath, promhttp.Handler())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`<html>
+		_, err := w.Write([]byte(`<html>
 			<head><title>prometheus-saltstack-exporter</title></head>
 			<body>
 			<h1>prometheus-saltstack-exporter</h1>
 			<p><a href="` + *metricsPath + `">Metrics</a></p>
 			</body>
 			</html>`))
+		if err != nil {
+			log.Fatal("Error writing default message")
+		}
 	})
 
 	log.Info("Beginning to serve on address ", *listenAddress)

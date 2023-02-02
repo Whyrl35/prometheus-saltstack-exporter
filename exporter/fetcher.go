@@ -34,6 +34,15 @@ type Masters struct {
 	status map[string]bool
 }
 
+type Job struct {
+	id          string
+	function    string
+	target_type string
+	user        string
+	startTime   string
+	// BUG: target      string
+}
+
 /*
  * Builder of new Fetcher pseudo-object
  * Get the saltstack url, user, password
@@ -217,4 +226,32 @@ func (f *Fetcher) Masters() (*Masters, error) {
 // TODO: Faire une fonction qui retourne le status d'un master (parametres)
 // TODO: Faire une fonction qui retourne l'etat du dernier highstate/apply pour un agent
 // TODO: Faire une function qui retourne le compte de highstate/apply total par agent
-// TODO: c.f. les possibiltés avec l'API
+func (f *Fetcher) Jobs() (*[]Job, error) {
+	jobs := []Job{}
+
+	jsonParsed, err := f.getJson(f.saltUrl + "/jobs")
+
+	if err != nil {
+		return &jobs, fmt.Errorf("error parsing JSON: %v", err)
+	}
+
+	for _, elt := range jsonParsed.S("return").Children() {
+		for key, val := range elt.ChildrenMap() {
+			jobs = append(jobs, Job{
+				id:       key,
+				function: val.Search("Function").Data().(string),
+				// BUG : don't know why but this one is in error, may be because of the "*" value
+				// target:      val.Search("Target").Data().(string),
+				target_type: val.Search("Target-type").Data().(string),
+				user:        val.Search("User").Data().(string),
+				startTime:   val.Search("StartTime").Data().(string),
+			})
+		}
+	}
+
+	log.WithFields(log.Fields{
+		"count": len(jobs),
+	}).Debug("displaying jobs informations")
+
+	return &jobs, nil
+}
