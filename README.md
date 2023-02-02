@@ -1,49 +1,182 @@
 # salt-exporter
 
-## Description
-
-TBD: describe the exporter
+Export [Saltstack](https://saltproject.io/) metrics to [Prometheus](https://prometheus.io/)
 
 ## Metrics
 
+Masters metrics
+
 ```
-list all metrics here
+# HELP saltstack_master_up Master in up(1) or down(0)
+# TYPE saltstack_master_up gauge
+saltstack_master_up{master="10.0.1.5"} 1
+saltstack_master_up{master="saltmaster.cloud.whyrl.fr"} 1
+saltstack_master_up{master="saltmaster.whyrl.fr"} 1
+```
+
+Minions metrics
+
+```
+# HELP saltstack_minions_count Number of minions declared in salt
+# TYPE saltstack_minions_count gauge
+saltstack_minions_count 11
+```
+
+Jobs metrics
+
+```
+incoming
 ```
 
 ## Preparing saltstack API
 
-### rest_cherrypy
+Before installing the exporter, be sure to install and configure the `salt-api`.
+
+If it's not already in place in your `saltstack` environment, please install the `rest_cherrypy` api.
+You can find the installation method [here](https://docs.saltproject.io/en/latest/ref/netapi/all/salt.netapi.rest_cherrypy.html#a-rest-api-for-salt) on the saltstack website.
+
+### create at least one external auth user or group
+
+Edit your `master` configuration file or add a `master.d/external_auth.conf` with the following parameter:
+
+```
+external_auth:
+  pam:
+    ludovic:
+      - .*
+      - '@runner'
+      - '@wheel'
+      - '@jobs'
+```
+
+This will authenticate the user named "ludovic" via PAM, giving some authorization.
+You can try different settings, auth method and authorization, see the [documentation](https://docs.saltproject.io/en/latest/topics/eauth/index.html#acl-eauth)
+
+### rest_cherrypy configuration
+
+You may configure the `salt-api` like this :
+
+```
+rest_cherrypy:
+  port: 3333
+  host: 0.0.0.0
+  disable_ssl: true
+```
+
+You can set the `disable_ssl` paramater to `false` and use self-signed certificate.
+
+```
+salt-call --local tls.create_self_signed_cert
+```
+
+And then change the rest_cherrypy configuration like this:
+
+```
+rest_cherrypy:
+  port: 3333
+  host: 0.0.0.0
+  disable_ssl: false
+  ssl_crt: /etc/pki/tls/certs/localhost.crt
+  ssl_key: /etc/pki/tls/certs/localhost.key
+```
 
 ### testing API
+
+You may have to start or restart the `salt-api` service if it's not already done.
+
+```
+systemctl restart salt-api.service
+```
+
+Now that the `salt-api` is configured and started we can test it.
 
 #### login
 
 login:
 
 ```
-curl -sSk http://${URL}/login -d username=${USERNAME} -d password="${PASSWORD}" -d eauth=pam
+curl -sSk http://localhost:3333/login -d username=ludovic -d password="${PASSWORD}" -d eauth=pam
 ```
 
 return a JSON:
 
 ```
-{"return": [{"token": "a66e35c1cc59a45aa93f82576f996b6ffbb0d240", "expire": 1674859425.5400722, "start": 1674816225.5400717, "user": "_username_", "eauth": "pam", "perms": [".*", "@jobs", "@runner", "@wheel"]}]}
+{"return": [{"token": "a66e35c1cc59a45aa93f82576f996b6ffbb0d240", "expire": 1674859425.5400722, "start": 1674816225.5400717, "user": "ludovic", "eauth": "pam", "perms": [".*", "@jobs", "@runner", "@wheel"]}]}
 ```
 
 ## Usage
+
+```
+usage: prometheus-saltstack-exporter [<flags>]
+
+Flags:
+  -h, --help     Show context-sensitive help (also try --help-long and --help-man).
+      --config.file="config.yml"
+                 Exporter configuration file.
+      --web.listen-address=":9142"
+                 Address to listen on for telemetry
+      --web.telemetry-path="/metrics"
+                 Path under which to expose metrics
+      --debug    Active debug in log
+      --version  Show application version.
+```
 
 ## Installing
 
 ### Debian family
 
+Not ready yet, need to build a debian/ubuntu/... package with
+
+* the binary installed in /usr/bin or other
+* create a directory /etc/prometheus-saltstack-exporter
+* create a default `config.yaml` file the configuration directory
+* create a service file for systemd
+
 ### RedHat family
+
+Not ready yet, need to build a redhat/centos/fedora/... package with
+
+* the binary installed in /usr/bin or other
+* create a directory /etc/prometheus-saltstack-exporter
+* create a default `config.yaml` file the configuration directory
+* create a service file for systemd
 
 ### Others
 
+```
+go install github.com/Whyrl35/prometheus-saltstack-exporter
+```
+
+or download the latest release from github
+
 # Development
+
+If you want to contribute, please read the [CONTRIBUTING.md](CONTTRIBUTING.md), then:
+
+1. Use Golang version `>= 1.19`
+2. Fork [this repository](https://github.com/Whyrl35/prometheus-saltstack-exporter)
+3. Create a feature branch
+4. Run test suite with `$ make test` command and be sure it passes
+5. Install and user pre-commit `$ pre-commit install`
+    * it will need [golangci-lint](https://golangci-lint.run/usage/install/#local-installation)
+    * it will need [goimports](https://pkg.go.dev/golang.org/x/tools/cmd/goimports)
+    * it will need [go-critic](https://github.com/go-critic/go-critic#installation)
+    * and it also use [commitlint](https://commitlint.js.org/#/)
+7. Edit the code
+8. Commit your change
+9. Rebase against `master` branch
+10. Create a Pull Request
+
+For your commit message, you may follow the concept describe [here](https://mokkapps.de/blog/how-to-automatically-generate-a-helpful-changelog-from-your-git-commit-messages/)
 
 ## Install go environment
 
+If you don't already have a Go environment, please follow this [documentation](https://go.dev/doc/install).
+
 ## Makefile
 
+A `Makefile` is here to make your life easier to try and build the package.
+
 ## Testing
+
+TBD

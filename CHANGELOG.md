@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Continuous Integration
+- adding changelog (git-chglog) information status
+
+### Documentations
+- Fill the README file
+
 
 <a name="v0.2.1"></a>
 ## [v0.2.1] - 2023-02-02
