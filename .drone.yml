@@ -7,7 +7,7 @@ steps:
   - name: prepare
     image: golang:1.19
     volumes:
-      - name: deps
+      - name: cache
         path: /go
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
@@ -21,15 +21,19 @@ steps:
   - name: format
     image: golang:1.19
     volumes:
-      - name: deps
+      - name: cache
         path: /go
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - go fmt
       - go vet
-      - golangci-lint
-      - gocritic
+      - golangci-lint run
+      - gocritic check
 
+volumes:
+  - name: cache
+    host:
+      path: /data/docker/cache/prom-exp-cache
 
 ---
 kind: pipeline
@@ -40,7 +44,7 @@ steps:
   - name: prepare
     image: golang:1.19
     volumes:
-      - name: deps
+      - name: cache
         path: /go
     commands:
       - go install github.com/prometheus/promu@latest
@@ -48,7 +52,7 @@ steps:
   - name: build
     image: golang:1.19
     volumes:
-      - name: deps
+      - name: cache
         path: /go
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
@@ -57,10 +61,20 @@ steps:
 depends_on:
   - validate
 
+volumes:
+  - name: cache
+    host:
+      path: /data/docker/cache/prom-exp-cache
+
 ---
 kind: pipeline
 name: notify
 type: docker
+
+trigger:
+  status:
+    - success
+    - failure
 
 steps:
   - name: slack
@@ -72,5 +86,12 @@ steps:
       status:
         - failure
         - success
+
 depends_on:
+  - validate
   - build
+---
+kind: signature
+hmac: 87ee9f32917d05f313b2e17511fd5a440e816ef56143641f5e606c33edbe1e93
+
+...
