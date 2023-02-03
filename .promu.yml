@@ -5,7 +5,7 @@ go:
 repository:
   path: github.com/Whyrl35/prometheus-saltstack-exporter
 build:
-  prefix: ./bin
+  prefix: .
   binaries:
     - name: prometheus-saltstack-exporter
       path: .
@@ -22,6 +22,7 @@ tarball:
   files:
     - LICENSE
     - README.md
+    - prometheus-saltstack-exporter
 crossbuild:
   platforms:
     - linux/amd64

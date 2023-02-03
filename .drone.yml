@@ -58,6 +58,30 @@ steps:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - make build
 
+  - name: release
+    image: golang:1.19
+    volumes:
+      - name: cache
+        path: /go
+    commands:
+      - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
+      - make tarball
+    when:
+      event: tag
+
+  - name: publish
+    image: plugins/github-release
+    settings:
+      api_key:
+        from_secret:  drone_github_publish_release
+      files: prometheus-saltstack-exporter-*.tar.gz
+      file_exists: overwrite
+      checksum: sha256
+      draft: true
+      prerelease: false
+    when:
+      event: tag
+
 depends_on:
   - validate
 
@@ -92,6 +116,6 @@ depends_on:
   - build
 ---
 kind: signature
-hmac: 87ee9f32917d05f313b2e17511fd5a440e816ef56143641f5e606c33edbe1e93
+hmac: 291b3bbc1d0b8e957a8c179aba4c0370218ad43da1c0e42a88bf5a1fc78b94d3
 
 ...
