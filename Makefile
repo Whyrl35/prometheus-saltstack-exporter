@@ -50,9 +50,9 @@ promu:
 		$(GO) get -u github.com/prometheus/promu
 
 run:
-	@$(GO) run .
+	@$(GO) run ./
 
 clean:
-	rm -f bin/*
+	rm -f ./prometheus-saltstack-exporter
 
 .PHONY: all style format dependencies build test vet tarball run clean
