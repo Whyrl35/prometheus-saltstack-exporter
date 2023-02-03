@@ -10,9 +10,13 @@ steps:
       - name: deps
         path: /go
     commands:
+      - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - go install golang.org/x/tools/cmd/goimports@latest
       - curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.50.1
       - go install github.com/go-critic/go-critic/cmd/gocritic@latest
+      - goimports
+      - go mod tidy
+      - go mod vendor
 
   - name: format
     image: golang:1.19
@@ -20,10 +24,12 @@ steps:
       - name: deps
         path: /go
     commands:
+      - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - go fmt
       - go vet
       - golangci-lint
       - gocritic
+
 
 ---
 kind: pipeline
@@ -45,6 +51,7 @@ steps:
       - name: deps
         path: /go
     commands:
+      - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - make build
 
 depends_on:
@@ -67,9 +74,3 @@ steps:
         - success
 depends_on:
   - build
-
----
-kind: signature
-hmac: d9fecad40592f7dda24e3fd15d45f6af9b4650ec33b9cc4f23c255d0f9906a04
-
-...
