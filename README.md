@@ -1,3 +1,5 @@
+[![Build Status](https://drone.whyrl.fr/api/badges/Whyrl35/prometheus-saltstack-exporter/status.svg)](https://drone.whyrl.fr/Whyrl35/prometheus-saltstack-exporter)
+
 # salt-exporter
 
 Export [Saltstack](https://saltproject.io/) metrics to [Prometheus](https://prometheus.io/)

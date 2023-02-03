@@ -4,26 +4,26 @@ type: docker
 name: validate
 
 steps:
-- name: prepare
-  image: golang
-  volumes:
-  - name: deps
-    path: /go
-  commands:
-  - go install goimports
-  - curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.50.1
-  - go install -v github.com/go-critic/go-critic/cmd/gocritic@latest
+  - name: prepare
+    image: golang:1.19
+    volumes:
+      - name: deps
+        path: /go
+    commands:
+      - go install goimports
+      - curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.50.1
+      - go install -v github.com/go-critic/go-critic/cmd/gocritic@latest
 
-- name: format
-  image: golang
-  volumes:
-  - name: deps
-    path: /go
-  commands:
-  - go fmt
-  - go vet
-  - golangci-lint
-  - gocritic
+  - name: format
+    image: golang:1.19
+    volumes:
+      - name: deps
+        path: /go
+    commands:
+      - go fmt
+      - go vet
+      - golangci-lint
+      - gocritic
 
 ---
 kind: pipeline
@@ -31,39 +31,39 @@ type: docker
 name: build
 
 steps:
-- name: prepare
-  image: golang
-  volumes:
-  - name: deps
-    path: /go
-  commands:
-  - go install github.com/prometheus/promu@latest
+  - name: prepare
+    image: golang:1.19
+    volumes:
+      - name: deps
+        path: /go
+    commands:
+      - go install github.com/prometheus/promu@latest
 
-- name: build
-  image: golang
-  volumes:
-  - name: deps
-    path: /go
-  commands:
-  - make build
+  - name: build
+    image: golang:1.19
+    volumes:
+      - name: deps
+        path: /go
+    commands:
+      - make build
 
 depends_on:
-- lint
+  - lint
 
 ---
 kind: pipeline
-name: after
+name: notify
 type: docker
 
 steps:
-- name: slack
-  image: plugins/slack
-  settings:
-    webhook:
-      from_secret: slack_webhook
-  when:
-    status:
-      - failure
-      - success
+  - name: slack
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+    when:
+      status:
+        - failure
+        - success
 depends_on:
-- push
+  - push
