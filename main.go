@@ -16,7 +16,7 @@ import (
 
 var (
 	configFile    = kingpin.Flag("config.file", "Exporter configuration file.").Default("config.yaml").String()
-	listenAddress = kingpin.Flag("web.listen-address", "Address to listen on for telemetry").Default(":9142").String()
+	listenAddress = kingpin.Flag("web.listen-address", "Address to listen on for telemetry").Default(":19142").String()
 	metricsPath   = kingpin.Flag("web.telemetry-path", "Path under which to expose metrics").Default("/metrics").String()
 	hasDebug      = kingpin.Flag("debug", "Active debug in log").Bool()
 )
