@@ -45,7 +45,7 @@ steps:
   - name: deps
     path: /go
   commands:
-  - promu build
+  - make build
 
 depends_on:
 - lint
