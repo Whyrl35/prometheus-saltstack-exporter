@@ -27,9 +27,12 @@ steps:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - go fmt
       - go vet
-      - golangci-lint
-      - gocritic
+      - golangci-lint run
+      - gocritic check
 
+volumes:
+  - name: deps
+    temp: {}
 
 ---
 kind: pipeline
@@ -57,6 +60,9 @@ steps:
 depends_on:
   - validate
 
+volumes:
+  - name: deps
+    temp: {}
 ---
 kind: pipeline
 name: notify
