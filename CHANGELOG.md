@@ -2,6 +2,16 @@
 ## [Unreleased]
 
 
+<a name="v0.3.3"></a>
+## [v0.3.3] - 2023-02-06
+### Feat
+- Adding deb and rpm packages build
+
+### Fix
+- changing artificats mount point
+- adding forgotten drone signature
+
+
 <a name="v0.3.2"></a>
 ## [v0.3.2] - 2023-02-06
 ### Feat
@@ -63,7 +73,8 @@
 <a name="v0.0.1"></a>
 ## v0.0.1 - 2023-01-31
 
-[Unreleased]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.3...HEAD
+[v0.3.3]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.2...v0.3.3
 [v0.3.2]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.2.2...v0.3.0
