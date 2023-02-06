@@ -18,6 +18,7 @@ bin/*
 
 # Dependency directories (remove the comment below to include it)
 vendor/
+artifacts/
 
 # Don't get the config.yml
 config.yaml

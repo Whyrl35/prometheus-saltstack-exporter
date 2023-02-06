@@ -10,7 +10,7 @@ steps:
       - name: go_cache
         path: /go
       - name: artifacts_cache
-        path: ./artifacts
+        path: /drone/src/artifacts
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - go install golang.org/x/tools/cmd/goimports@latest
@@ -26,7 +26,7 @@ steps:
       - name: go_cache
         path: /go
       - name: artifacts_cache
-        path: ./artifacts
+        path: /drone/src/artifacts
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - go fmt
@@ -54,7 +54,7 @@ steps:
       - name: go_cache
         path: /go
       - name: artifacts_cache
-        path: ./artifacts
+        path: /drone/src/artifacts
     commands:
       - go install github.com/prometheus/promu@latest
 
@@ -64,7 +64,7 @@ steps:
       - name: go_cache
         path: /go
       - name: artifacts_cache
-        path: ./artifacts
+        path: /drone/src/artifacts
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - make build
@@ -75,7 +75,7 @@ steps:
       - name: go_cache
         path: /go
       - name: artifacts_cache
-        path: ./artifacts
+        path: /drone/src/artifacts
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - make tarball
@@ -86,7 +86,7 @@ steps:
     image: fpm
     volumes:
       - name: artifacts_cache
-        path: ./artifacts
+        path: /drone/src/artifacts
     commands:
       - make build-deb
     when:
@@ -96,7 +96,7 @@ steps:
     image: fpm
     volumes:
       - name: artifacts_cache
-        path: ./artifacts
+        path: /drone/src/artifacts
     commands:
       - make build-rpm
     when:
@@ -106,7 +106,7 @@ steps:
     image: plugins/github-release
     volumes:
       - name: artifacts_cache
-        path: ./artifacts
+        path: /drone/src/artifacts
     settings:
       api_key:
         from_secret:  drone_github_publish_release
@@ -155,6 +155,6 @@ depends_on:
   - build
 ---
 kind: signature
-hmac: ef483e1abb700c6c6d36e5fbdf4f898835a7994a73bbdef4a6bbf3623c2641b4
+hmac: 8e0c313b66838962533d78f9033ab05681aa368d58caaf354ea869c28fa980aa
 
 ...
