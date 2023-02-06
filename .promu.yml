@@ -17,6 +17,11 @@ build:
     -X github.com/Whyrl35/prometheus-saltstack-exporter/vendor/github.com/prometheus/common/version.Branch={{.Branch}}
     -X github.com/Whyrl35/prometheus-saltstack-exporter/vendor/github.com/prometheus/common/version.BuildUser={{user}}@{{host}}
     -X github.com/Whyrl35/prometheus-saltstack-exporter/vendor/github.com/prometheus/common/version.BuildDate={{date "20060102-15:04:05"}}
+    -X {{repoPath}}/version.Version={{.Version}}
+    -X {{repoPath}}/version.Revision={{.Revision}}
+    -X {{repoPath}}/version.Branch={{.Branch}}
+    -X {{repoPath}}/version.BuildUser={{user}}@{{host}}
+    -X {{repoPath}}/version.BuildDate={{date "20060102-15:04:05"}}
 tarball:
   prefix: .
   files:
@@ -31,3 +36,5 @@ crossbuild:
     - linux/arm64
     - darwin/amd64
     - darwin/386
+    - windows/amd64
+    - windows/386
