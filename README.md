@@ -2,7 +2,7 @@
 
 # salt-exporter
 
-Export [Saltstack](https://saltproject.io/) metrics to [Prometheus](https://prometheus.io/)
+Export [Saltstack](https://saltproject.io/) metrics to [Prometheus](https://prometheus.io/) [![Go Report Card](https://goreportcard.com/badge/github.com/Whyrl35/prometheus-saltstack-exporter)](https://goreportcard.com/report/github.com/Whyrl35/prometheus-saltstack-exporter)
 
 ## Metrics
 

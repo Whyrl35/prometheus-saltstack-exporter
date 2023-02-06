@@ -7,8 +7,10 @@ steps:
   - name: prepare
     image: golang:1.19
     volumes:
-      - name: cache
+      - name: go_cache
         path: /go
+      - name: artifacts_cache
+        path: ./artifacts
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - go install golang.org/x/tools/cmd/goimports@latest
@@ -21,8 +23,10 @@ steps:
   - name: format
     image: golang:1.19
     volumes:
-      - name: cache
+      - name: go_cache
         path: /go
+      - name: artifacts_cache
+        path: ./artifacts
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - go fmt
@@ -31,9 +35,12 @@ steps:
       - gocritic check
 
 volumes:
-  - name: cache
+  - name: go_cache
     host:
-      path: /data/docker/cache/prom-exp-cache
+      path: /opt/docker/cache/promsaltexp_go
+  - name: artifacts_cache
+    host:
+      path: /opt/docker/cache/promsaltexp_artifacts
 
 ---
 kind: pipeline
@@ -44,40 +51,69 @@ steps:
   - name: prepare
     image: golang:1.19
     volumes:
-      - name: cache
+      - name: go_cache
         path: /go
+      - name: artifacts_cache
+        path: ./artifacts
     commands:
       - go install github.com/prometheus/promu@latest
 
   - name: build
     image: golang:1.19
     volumes:
-      - name: cache
+      - name: go_cache
         path: /go
+      - name: artifacts_cache
+        path: ./artifacts
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - make build
 
-  - name: release
+  - name: release-tarball
     image: golang:1.19
     volumes:
-      - name: cache
+      - name: go_cache
         path: /go
+      - name: artifacts_cache
+        path: ./artifacts
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - make tarball
     when:
       event: tag
 
+  - name: release-deb
+    image: fpm
+    volumes:
+      - name: artifacts_cache
+        path: ./artifacts
+    commands:
+      - make build-deb
+    when:
+      event: tag
+
+  - name: release-rpm
+    image: fpm
+    volumes:
+      - name: artifacts_cache
+        path: ./artifacts
+    commands:
+      - make build-rpm
+    when:
+      event: tag
+
   - name: publish
     image: plugins/github-release
+    volumes:
+      - name: artifacts_cache
+        path: ./artifacts
     settings:
       api_key:
         from_secret:  drone_github_publish_release
-      files: prometheus-saltstack-exporter-*.tar.gz
+      files: artifacts/prometheus-saltstack-exporter-*
       file_exists: overwrite
       checksum: sha256
-      draft: true
+      draft: false
       prerelease: false
     when:
       event: tag
@@ -86,9 +122,12 @@ depends_on:
   - validate
 
 volumes:
-  - name: cache
+  - name: go_cache
     host:
-      path: /data/docker/cache/prom-exp-cache
+      path: /opt/docker/cache/promsaltexp_go
+  - name: artifacts_cache
+    host:
+      path: /opt/docker/cache/promsaltexp_artifacts
 
 ---
 kind: pipeline
