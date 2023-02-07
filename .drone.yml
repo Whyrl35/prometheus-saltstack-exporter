@@ -83,7 +83,7 @@ steps:
       event: tag
 
   - name: release-deb
-    image: fpm
+    image: whyrl/fpm:latest
     volumes:
       - name: artifacts_cache
         path: /drone/src/artifacts
@@ -93,7 +93,7 @@ steps:
       event: tag
 
   - name: release-rpm
-    image: fpm
+    image: whyrl/fpm:latest
     volumes:
       - name: artifacts_cache
         path: /drone/src/artifacts
@@ -155,6 +155,6 @@ depends_on:
   - build
 ---
 kind: signature
-hmac: 8e0c313b66838962533d78f9033ab05681aa368d58caaf354ea869c28fa980aa
+hmac: fc7de7327693bf309666f4d0ea78333f39bd93d9a2e2416c710983c26c353ca3
 
 ...
