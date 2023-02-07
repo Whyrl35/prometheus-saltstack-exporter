@@ -89,6 +89,7 @@ steps:
       - name: artifacts_cache
         path: /drone/src/artifacts
     commands:
+      - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - make build-deb
     when:
       event: tag
@@ -99,6 +100,7 @@ steps:
       - name: artifacts_cache
         path: /drone/src/artifacts
     commands:
+      - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - make build-rpm
     when:
       event: tag
