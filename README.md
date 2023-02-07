@@ -1,6 +1,6 @@
 [![Build Status](https://drone.whyrl.fr/api/badges/Whyrl35/prometheus-saltstack-exporter/status.svg)](https://drone.whyrl.fr/Whyrl35/prometheus-saltstack-exporter)  [![Go Report Card](https://goreportcard.com/badge/github.com/Whyrl35/prometheus-saltstack-exporter)](https://goreportcard.com/report/github.com/Whyrl35/prometheus-saltstack-exporter)
 
-# salt-exporter
+# prometheus-saltstack-exporter
 
 Export [Saltstack](https://saltproject.io/) metrics to [Prometheus](https://prometheus.io/)
 
@@ -127,21 +127,34 @@ Flags:
 
 ### Debian family
 
-Not ready yet, need to build a debian/ubuntu/... package with
+A debian linux package is available for x86_64 platform.
 
-* the binary installed in /usr/bin or other
-* create a directory /etc/prometheus-saltstack-exporter
-* create a default `config.yaml` file the configuration directory
-* create a service file for systemd
+```
+dpkg -i prometheus-saltstack-explorer-semver-gitver.deb
+```
+
+In the package there are :
+
+* A binary installed in /usr/bin
+* A directory /etc/prometheus-saltstack-exporter
+* A default `config.yaml` file the configuration directory
+* A service file for systemd
+
 
 ### RedHat family
 
-Not ready yet, need to build a redhat/centos/fedora/... package with
+A redhat linux package is available for x86_64 platform.
 
-* the binary installed in /usr/bin or other
-* create a directory /etc/prometheus-saltstack-exporter
-* create a default `config.yaml` file the configuration directory
-* create a service file for systemd
+```
+rpm -hiv prometheus-saltstack-explorer-semver-gitver.rpm
+```
+
+In the package there are :
+
+* A binary installed in /usr/bin
+* A directory /etc/prometheus-saltstack-exporter
+* A default `config.yaml` file the configuration directory
+* A service file for systemd
 
 ### Others
 
@@ -149,7 +162,7 @@ Not ready yet, need to build a redhat/centos/fedora/... package with
 go install github.com/Whyrl35/prometheus-saltstack-exporter
 ```
 
-or download the latest release from github
+or download the latest release from [github-releases](https://github.com/Whyrl35/prometheus-saltstack-exporter/releases)
 
 # Development
 
