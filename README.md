@@ -1,8 +1,8 @@
-[![Build Status](https://drone.whyrl.fr/api/badges/Whyrl35/prometheus-saltstack-exporter/status.svg)](https://drone.whyrl.fr/Whyrl35/prometheus-saltstack-exporter)
+[![Build Status](https://drone.whyrl.fr/api/badges/Whyrl35/prometheus-saltstack-exporter/status.svg)](https://drone.whyrl.fr/Whyrl35/prometheus-saltstack-exporter)  [![Go Report Card](https://goreportcard.com/badge/github.com/Whyrl35/prometheus-saltstack-exporter)](https://goreportcard.com/report/github.com/Whyrl35/prometheus-saltstack-exporter)
 
 # salt-exporter
 
-Export [Saltstack](https://saltproject.io/) metrics to [Prometheus](https://prometheus.io/) [![Go Report Card](https://goreportcard.com/badge/github.com/Whyrl35/prometheus-saltstack-exporter)](https://goreportcard.com/report/github.com/Whyrl35/prometheus-saltstack-exporter)
+Export [Saltstack](https://saltproject.io/) metrics to [Prometheus](https://prometheus.io/)
 
 ## Metrics
 
