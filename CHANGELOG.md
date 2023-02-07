@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 
+<a name="v0.3.6"></a>
+## [v0.3.6] - 2023-02-07
+### Fix
+- adding missing volume for drone
+
+
 <a name="v0.3.5"></a>
 ## [v0.3.5] - 2023-02-07
 ### Fix
@@ -87,7 +93,8 @@
 <a name="v0.0.1"></a>
 ## v0.0.1 - 2023-01-31
 
-[Unreleased]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.5...HEAD
+[Unreleased]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.6...HEAD
+[v0.3.6]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.5...v0.3.6
 [v0.3.5]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.4...v0.3.5
 [v0.3.4]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.3...v0.3.4
 [v0.3.3]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.2...v0.3.3
