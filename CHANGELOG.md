@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Fix
+- adding missing volume for drone
+
 
 <a name="v0.3.5"></a>
 ## [v0.3.5] - 2023-02-07
