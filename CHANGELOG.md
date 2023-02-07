@@ -1,100 +1,103 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Bug Fixes
+- drone, build on tag only
+
+### Documentation
+- Improving README
+
 
 <a name="v0.3.7"></a>
 ## [v0.3.7] - 2023-02-07
-### Fix
+### Bug Fixes
 - Fixing drone configuration to build deb/rpm
 - adding missing volume for drone
 
 
 <a name="v0.3.6"></a>
 ## [v0.3.6] - 2023-02-07
-### Fix
+### Bug Fixes
 - adding missing volume for drone
 
 
 <a name="v0.3.5"></a>
 ## [v0.3.5] - 2023-02-07
-### Fix
+### Bug Fixes
 - Add promu PATH for build-deb and build-rpm
 - change badge position in the README file
 
 
 <a name="v0.3.4"></a>
 ## [v0.3.4] - 2023-02-07
-### Fix
+### Bug Fixes
 - clean artifacts before build
 - Changing the fpm image
 
 
 <a name="v0.3.3"></a>
 ## [v0.3.3] - 2023-02-06
-### Feat
-- Adding deb and rpm packages build
-
-### Fix
+### Bug Fixes
 - changing artificats mount point
 - adding forgotten drone signature
+
+### Features
+- Adding deb and rpm packages build
 
 
 <a name="v0.3.2"></a>
 ## [v0.3.2] - 2023-02-06
-### Feat
+### Features
 - Adding deb and rpm packages build
 - Make drone publish release
 
 
 <a name="v0.3.1"></a>
 ## [v0.3.1] - 2023-02-03
-### Feat
+### Features
 - Make drone publish release
 - adding volume to drone to share binaries
 
 
 <a name="v0.3.0"></a>
 ## [v0.3.0] - 2023-02-03
-### Feat
+### Bug Fixes
+- fixing drone.io conf file
+
+### Features
 - adding volume to drone to share binaries
 - adding PATH to ENV for drone
 - adding drone file signature
 - changing some drone parameters and adding badge
 - configure/prepare a drone.yml for CI
 
-### Fix
-- fixing drone.io conf file
-
 
 <a name="v0.2.2"></a>
 ## [v0.2.2] - 2023-02-02
-### Ci
-- adding changelog (git-chglog) information status
-
-### Docs
+### Documentation
 - Fill the README file
 
 
 <a name="v0.2.1"></a>
 ## [v0.2.1] - 2023-02-02
-### Feat
-- Adding pre-commit
-
-### Fix
+### Bug Fixes
 - adding missing configuration file
 - change the config file extension to .yaml
+
+### Features
+- Adding pre-commit
 
 
 <a name="v0.1.3"></a>
 ## [v0.1.3] - 2023-02-01
-### Feat
-- Make promu work
-
-### Fix
+### Bug Fixes
 - Fixing makefile
 
-### Refactor
+### Code Refactoring
 - Adding changelog info
+
+### Features
+- Make promu work
 
 
 <a name="v0.0.1"></a>
