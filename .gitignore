@@ -22,3 +22,4 @@ artifacts/
 
 # Don't get the config.yml
 config.yaml
+!files/pkg/config/config.yaml

@@ -1,0 +1,4 @@
+saltstack:
+  url: https://localhost:3333
+  username: admin
+  password: password
