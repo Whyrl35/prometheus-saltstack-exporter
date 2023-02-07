@@ -1,8 +1,26 @@
-[![Build Status](https://drone.whyrl.fr/api/badges/Whyrl35/prometheus-saltstack-exporter/status.svg)](https://drone.whyrl.fr/Whyrl35/prometheus-saltstack-exporter)  [![Go Report Card](https://goreportcard.com/badge/github.com/Whyrl35/prometheus-saltstack-exporter)](https://goreportcard.com/report/github.com/Whyrl35/prometheus-saltstack-exporter)
+[![Build Status](https://drone.whyrl.fr/api/badges/Whyrl35/prometheus-saltstack-exporter/status.svg)](https://drone.whyrl.fr/Whyrl35/prometheus-saltstack-exporter)  [![Go Report Card](https://goreportcard.com/badge/github.com/Whyrl35/prometheus-saltstack-exporter)](https://goreportcard.com/report/github.com/Whyrl35/prometheus-saltstack-exporter)  ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Whyrl35/prometheus-saltstack-exporter)
 
 # prometheus-saltstack-exporter
 
 Export [Saltstack](https://saltproject.io/) metrics to [Prometheus](https://prometheus.io/)
+
+- [prometheus-saltstack-exporter](#prometheus-saltstack-exporter)
+  - [Metrics](#metrics)
+  - [Preparing saltstack API](#preparing-saltstack-api)
+    - [create at least one external auth user or group](#create-at-least-one-external-auth-user-or-group)
+    - [rest\_cherrypy configuration](#rest_cherrypy-configuration)
+    - [testing API](#testing-api)
+      - [login](#login)
+  - [Usage](#usage)
+  - [Installing](#installing)
+    - [Debian family](#debian-family)
+    - [RedHat family](#redhat-family)
+    - [Others](#others)
+- [Development](#development)
+  - [Install go environment](#install-go-environment)
+  - [Makefile](#makefile)
+  - [Testing](#testing)
+
 
 ## Metrics
 

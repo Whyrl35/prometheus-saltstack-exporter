@@ -5,6 +5,8 @@
 - drone, build on tag only
 
 ### Documentation
+- Adding TOC and version badge in README
+- regenerate CHANGELOG
 - Improving README
 
 
