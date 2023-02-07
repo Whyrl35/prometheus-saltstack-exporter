@@ -80,8 +80,8 @@ steps:
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - make tarball
-#    when:
-#      event: tag
+    when:
+      event: tag
 
   - name: release-deb
     image: whyrl/fpm:latest
@@ -93,8 +93,8 @@ steps:
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - make build-deb
-#    when:
-#      event: tag
+    when:
+      event: tag
 
   - name: release-rpm
     image: whyrl/fpm:latest
@@ -106,8 +106,8 @@ steps:
     commands:
       - export PATH=$${PATH}:/go/bin:/usr/local/go/bin
       - make build-rpm
-#    when:
-#      event: tag
+    when:
+      event: tag
 
   - name: publish
     image: plugins/github-release
