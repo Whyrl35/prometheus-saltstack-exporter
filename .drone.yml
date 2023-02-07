@@ -57,6 +57,7 @@ steps:
         path: /drone/src/artifacts
     commands:
       - go install github.com/prometheus/promu@latest
+      - rm -f /drone/src/artifacts/*
 
   - name: build
     image: golang:1.19
@@ -155,6 +156,6 @@ depends_on:
   - build
 ---
 kind: signature
-hmac: fc7de7327693bf309666f4d0ea78333f39bd93d9a2e2416c710983c26c353ca3
+hmac: 161dfbc41cb332cd3da0b54eacf9c235d9af7e2e472342da8dd704e5c6f48a9a
 
 ...
