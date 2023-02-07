@@ -86,6 +86,8 @@ steps:
   - name: release-deb
     image: whyrl/fpm:latest
     volumes:
+      - name: go_cache
+        path: /go
       - name: artifacts_cache
         path: /drone/src/artifacts
     commands:
@@ -97,6 +99,8 @@ steps:
   - name: release-rpm
     image: whyrl/fpm:latest
     volumes:
+      - name: go_cache
+        path: /go
       - name: artifacts_cache
         path: /drone/src/artifacts
     commands:
