@@ -168,13 +168,13 @@ func (f *Fetcher) getJson(url string) (*gabs.Container, error) {
  * Function associated to the Fetcher pseudo-object that fetch information about minions
  * Return a couple of Minion struct and error if it happens, nil otherwise
  */
-func (f *Fetcher) Minions() (*Minions, error) {
+func (f *Fetcher) Minions(minionsChan chan<- Minions) {
 	var minions = Minions{}
 
 	jsonParsed, err := f.getJson(f.saltUrl + "/minions")
 
 	if err != nil {
-		return &minions, fmt.Errorf("error parsing JSON: %v", err)
+		log.Errorf("error parsing JSON: %v", err)
 	}
 
 	for _, ele := range jsonParsed.S("return").Children() {
@@ -189,7 +189,8 @@ func (f *Fetcher) Minions() (*Minions, error) {
 		"count": minions.count,
 		"list":  minions.list,
 	}).Debug("displaying minions informations")
-	return &minions, nil
+
+	minionsChan <- minions
 }
 
 // TODO: function that check a minion status
@@ -199,7 +200,7 @@ func (f *Fetcher) Minions() (*Minions, error) {
  * Get a list of minions in parameters
  * Return a list of master
  */
-func (f *Fetcher) Masters() (*Masters, error) {
+func (f *Fetcher) Masters(masterChan chan<- Masters) {
 	var masters = Masters{}
 	var umasters = make(map[string]bool)
 
@@ -208,7 +209,7 @@ func (f *Fetcher) Masters() (*Masters, error) {
 	jsonParsed, err := f.getJson(f.saltUrl + "/minions")
 
 	if err != nil {
-		return &masters, fmt.Errorf("error parsing JSON: %v", err)
+		log.Errorf("error parsing JSON: %v", err)
 	}
 
 	for _, ele := range jsonParsed.S("return").Children() {
@@ -237,7 +238,8 @@ func (f *Fetcher) Masters() (*Masters, error) {
 		"list":   masters.list,
 		"status": masters.status,
 	}).Debug("displaying master informations")
-	return &masters, nil
+
+	masterChan <- masters
 }
 
 /*
@@ -249,13 +251,13 @@ func (f *Fetcher) Masters() (*Masters, error) {
  *	 - user: the user that run the job
  *	 - startTime: the date of the beginning of the job
  */
-func (f *Fetcher) Jobs() (*[]Job, error) {
+func (f *Fetcher) Jobs(jobsChan chan<- []Job) {
 	jobs := []Job{}
 
 	jsonParsed, err := f.getJson(f.saltUrl + "/jobs")
 
 	if err != nil {
-		return &jobs, fmt.Errorf("error parsing JSON: %v", err)
+		log.Errorf("error parsing JSON: %v", err)
 	}
 
 	for _, elt := range jsonParsed.S("return").Children() {
@@ -276,10 +278,10 @@ func (f *Fetcher) Jobs() (*[]Job, error) {
 		"count": len(jobs),
 	}).Debug("displaying jobs informations")
 
-	return &jobs, nil
+	jobsChan <- jobs
 }
 
-func (f *Fetcher) JobStatus(jobId string) (*JobStatus, error) {
+func (f *Fetcher) JobStatus(jobId string, jobStatusChan chan<- JobStatus) {
 	var job_status JobStatus
 
 	job_status.status = make(map[string]bool)
@@ -287,7 +289,9 @@ func (f *Fetcher) JobStatus(jobId string) (*JobStatus, error) {
 	jsonParsed, err := f.getJson(f.saltUrl + "/jobs/" + jobId)
 
 	if err != nil {
-		return &job_status, fmt.Errorf("error parsing JSON: %v", err)
+		log.Errorf("error parsing JSON: %v", err)
+		jobStatusChan <- job_status
+		return
 	}
 
 	for _, elt := range jsonParsed.S("info").Children() {
@@ -324,5 +328,6 @@ func (f *Fetcher) JobStatus(jobId string) (*JobStatus, error) {
 		"retcode":     job_status.errors,
 	}).Debug("displaying job status informations")
 
-	return &job_status, nil
+	defer wg.Done()
+	jobStatusChan <- job_status
 }
