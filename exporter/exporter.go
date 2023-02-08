@@ -20,6 +20,7 @@ func NewExporter(saltUrl string, saltUser string, saltPassword string) *Exporter
 	}
 }
 
+var wgGlobal sync.WaitGroup
 var wg sync.WaitGroup
 var masterUp = prometheus.NewDesc(prometheus.BuildFQName("saltstack", "", "master_up"), "Master in up(1) or down(0)", []string{"master"}, nil)
 var minionsCount = prometheus.NewDesc(prometheus.BuildFQName("saltstack", "", "minions_count"), "Number of minions declared in salt", nil, nil)
@@ -31,38 +32,33 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- jobsStatus
 }
 
-func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
-	f := NewFetcher(e.saltUrl, e.saltUser, e.saltPassword)
-
-	err := f.Login()
-	if err != nil {
-		log.WithFields(log.Fields{
-			"saltUrl":      e.saltUrl,
-			"saltUser":     e.saltPassword,
-			"saltPassword": "***",
-		}).Fatal(err)
-	}
-
-	// Create all chanels needed for the go routines
+func CollectMaster(ch chan<- prometheus.Metric, f *Fetcher) {
 	masterChan := make(chan Masters)
-	minionsChan := make(chan Minions)
-	jobsChan := make(chan []Job)
 
-	// Go routine on all simple data fetcher
 	go f.Masters(masterChan)
-	go f.Minions(minionsChan)
-	go f.Jobs(jobsChan)
 
-	// Treat data from channels
 	for k, v := range (<-masterChan).status {
 		ch <- prometheus.MustNewConstMetric(masterUp, prometheus.GaugeValue, map[bool]float64{true: 1, false: 0}[v], k)
 	}
 
+	defer wgGlobal.Done()
+}
+
+func CollectMinions(ch chan<- prometheus.Metric, f *Fetcher) {
+	minionsChan := make(chan Minions)
+
+	go f.Minions(minionsChan)
+
 	ch <- prometheus.MustNewConstMetric(minionsCount, prometheus.GaugeValue, float64((<-minionsChan).count))
 
-	// Check jobs status
-	// Status to be checked : state.highstate / state.apply with Arguments = []
-	// For one given Job check the Minions list and the Result for this minion
+	defer wgGlobal.Done()
+}
+
+func CollectJobInfos(ch chan<- prometheus.Metric, f *Fetcher) {
+	jobsChan := make(chan []Job)
+
+	go f.Jobs(jobsChan)
+
 	var jobs_details []JobStatus
 	jobsStatusChan := make(chan JobStatus, 1000)
 	minion_last_event := make(map[string]uint64)
@@ -100,4 +96,26 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 			}
 		}
 	}
+
+	defer wgGlobal.Done()
+}
+
+func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
+	f := NewFetcher(e.saltUrl, e.saltUser, e.saltPassword)
+
+	err := f.Login()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"saltUrl":      e.saltUrl,
+			"saltUser":     e.saltPassword,
+			"saltPassword": "***",
+		}).Fatal(err)
+	}
+
+	// Create all chanels needed for the go routines
+	wgGlobal.Add(3)
+	go CollectMaster(ch, f)
+	go CollectMinions(ch, f)
+	go CollectJobInfos(ch, f)
+	wgGlobal.Wait()
 }
