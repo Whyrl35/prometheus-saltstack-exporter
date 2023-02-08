@@ -43,6 +43,17 @@ type Job struct {
 	// BUG: target      string
 }
 
+type JobStatus struct {
+	id          string
+	target      string
+	target_type string
+	function    string
+	minions     []string
+	status      map[string]bool
+	errors      map[string]float64
+	start_time  time.Time
+}
+
 /*
  * Builder of new Fetcher pseudo-object
  * Get the saltstack url, user, password
@@ -181,6 +192,8 @@ func (f *Fetcher) Minions() (*Minions, error) {
 	return &minions, nil
 }
 
+// TODO: function that check a minion status
+
 /*
  * Function that return a list of minion masters
  * Get a list of minions in parameters
@@ -200,10 +213,14 @@ func (f *Fetcher) Masters() (*Masters, error) {
 
 	for _, ele := range jsonParsed.S("return").Children() {
 		for _, elem := range ele.ChildrenMap() {
-			master := elem.Path("master").Data().(string)
-			if !umasters[master] {
-				umasters[master] = true
-				masters.list = append(masters.list, master)
+			// Check that element is not a boolean
+			_, isBool := elem.Data().(bool)
+			if elem != nil && !isBool {
+				master := elem.Path("master").Data().(string)
+				if !umasters[master] {
+					umasters[master] = true
+					masters.list = append(masters.list, master)
+				}
 			}
 		}
 	}
@@ -223,9 +240,15 @@ func (f *Fetcher) Masters() (*Masters, error) {
 	return &masters, nil
 }
 
-// TODO: Faire une fonction qui retourne le status d'un master (parametres)
-// TODO: Faire une fonction qui retourne l'etat du dernier highstate/apply pour un agent
-// TODO: Faire une function qui retourne le compte de highstate/apply total par agent
+/*
+ * Functions that retrieve the lasts terminated jobs
+ * Returning Job list with :
+ *   - id: the job id
+ *   - function: state.apply, state.single, ...
+ *   - target_type: (grains, pcre, ...)
+ *	 - user: the user that run the job
+ *	 - startTime: the date of the beginning of the job
+ */
 func (f *Fetcher) Jobs() (*[]Job, error) {
 	jobs := []Job{}
 
@@ -254,4 +277,52 @@ func (f *Fetcher) Jobs() (*[]Job, error) {
 	}).Debug("displaying jobs informations")
 
 	return &jobs, nil
+}
+
+func (f *Fetcher) JobStatus(jobId string) (*JobStatus, error) {
+	var job_status JobStatus
+
+	job_status.status = make(map[string]bool)
+	job_status.errors = make(map[string]float64)
+	jsonParsed, err := f.getJson(f.saltUrl + "/jobs/" + jobId)
+
+	if err != nil {
+		return &job_status, fmt.Errorf("error parsing JSON: %v", err)
+	}
+
+	for _, elt := range jsonParsed.S("info").Children() {
+		job_status.id = jobId
+		job_status.target = elt.Path("Target").Data().(string)
+		job_status.function = elt.Path("Function").Data().(string)
+		job_status.target_type = elt.Path("Target-type").Data().(string)
+
+		time_string := elt.Path("StartTime").Data().(string)
+		job_status.start_time, err = time.Parse("2006, Jan 02 15:04:05", time_string[0:len(time_string)-7])
+
+		if err != nil {
+			continue
+		}
+
+		for _, minion := range elt.Path("Minions").Children() {
+			job_status.minions = append(job_status.minions, minion.Data().(string))
+		}
+
+		for _, minion := range job_status.minions {
+			job_status.status[minion] = elt.Search("Result", minion, "success").Data().(bool)
+			job_status.errors[minion] = elt.Search("Result", minion, "retcode").Data().(float64)
+		}
+	}
+
+	log.WithFields(log.Fields{
+		"id":          job_status.id,
+		"start_time":  job_status.start_time,
+		"function":    job_status.function,
+		"target":      job_status.target,
+		"target_type": job_status.target_type,
+		"minions":     job_status.minions,
+		"status":      job_status.status,
+		"retcode":     job_status.errors,
+	}).Debug("displaying job status informations")
+
+	return &job_status, nil
 }

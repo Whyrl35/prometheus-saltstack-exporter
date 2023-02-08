@@ -51,7 +51,7 @@ func main() {
 	// Configuring the logger
 	if *hasDebug {
 		log.SetLevel(log.DebugLevel)
-		log.SetReportCaller(true)
+		// log.SetReportCaller(true)
 	}
 
 	log.SetFormatter(&log.TextFormatter{
