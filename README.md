@@ -1,4 +1,4 @@
-[![Build Status](https://drone.whyrl.fr/api/badges/Whyrl35/prometheus-saltstack-exporter/status.svg)](https://drone.whyrl.fr/Whyrl35/prometheus-saltstack-exporter)  [![Go Report Card](https://goreportcard.com/badge/github.com/Whyrl35/prometheus-saltstack-exporter)](https://goreportcard.com/report/github.com/Whyrl35/prometheus-saltstack-exporter)  ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Whyrl35/prometheus-saltstack-exporter)
+[![Build Status](https://drone.whyrl.fr/api/badges/Whyrl35/prometheus-saltstack-exporter/status.svg)](https://drone.whyrl.fr/Whyrl35/prometheus-saltstack-exporter)  [![Go Report Card](https://goreportcard.com/badge/github.com/Whyrl35/prometheus-saltstack-exporter)](https://goreportcard.com/report/github.com/Whyrl35/prometheus-saltstack-exporter)  [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Whyrl35/prometheus-saltstack-exporter)](https://github.com/Whyrl35/prometheus-saltstack-exporter/releases/latest)
 
 # prometheus-saltstack-exporter
 
