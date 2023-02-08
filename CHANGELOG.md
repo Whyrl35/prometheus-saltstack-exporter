@@ -1,13 +1,36 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.4.1"></a>
+## [v0.4.1] - 2023-02-08
+### Bug Fixes
+- Changing LDFLAGS to make version work
+
+
+<a name="v0.4.0"></a>
+## [v0.4.0] - 2023-02-08
+### Features
+- improving go routines
+- adding go routines to fetch data
+
+
+<a name="v0.3.8"></a>
+## [v0.3.8] - 2023-02-08
 ### Bug Fixes
 - drone, build on tag only
 
+### Code Refactoring
+- removing commitlint
+
 ### Documentation
+- Adding metrics in README
 - Adding TOC and version badge in README
 - regenerate CHANGELOG
 - Improving README
+
+### Features
+- new job status per minion
 
 
 <a name="v0.3.7"></a>
@@ -105,7 +128,10 @@
 <a name="v0.0.1"></a>
 ## v0.0.1 - 2023-01-31
 
-[Unreleased]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.7...HEAD
+[Unreleased]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.4.1...HEAD
+[v0.4.1]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.4.0...v0.4.1
+[v0.4.0]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.8...v0.4.0
+[v0.3.8]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.7...v0.3.8
 [v0.3.7]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.6...v0.3.7
 [v0.3.6]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.5...v0.3.6
 [v0.3.5]: https://github.com/Whyrl35/prometheus-saltstack-exporter/compare/v0.3.4...v0.3.5
