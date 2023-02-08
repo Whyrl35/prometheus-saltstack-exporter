@@ -1,6 +1,8 @@
 package exporter
 
 import (
+	"strconv"
+
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 )
@@ -19,10 +21,12 @@ func NewExporter(saltUrl string, saltUser string, saltPassword string) *Exporter
 
 var masterUp = prometheus.NewDesc(prometheus.BuildFQName("saltstack", "", "master_up"), "Master in up(1) or down(0)", []string{"master"}, nil)
 var minionsCount = prometheus.NewDesc(prometheus.BuildFQName("saltstack", "", "minions_count"), "Number of minions declared in salt", nil, nil)
+var jobsStatus = prometheus.NewDesc(prometheus.BuildFQName("saltstack", "", "job_status"), "Job status", []string{"minion", "function"}, nil)
 
 func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- masterUp
 	ch <- minionsCount
+	ch <- jobsStatus
 }
 
 func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
@@ -74,10 +78,54 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 		}).Error(err)
 	}
 
+	var jobs_details []*JobStatus
 	for _, job := range *jobs {
 		if job.function == "state.highstate" || job.function == "state.apply" {
-			// call a function that get the result for the job (success or not) then compute a metrics on it
-			log.Debug()
+			// store the job ID if job.function and job.id and job.target
+			job_status, err := f.JobStatus(job.id)
+			if err != nil {
+				log.WithFields(log.Fields{
+					"saltUrl":      e.saltUrl,
+					"saltUser":     e.saltPassword,
+					"saltPassword": "***",
+				}).Error(err)
+			}
+
+			jobs_details = append(jobs_details, job_status)
+
+			/*for _, minion := range job_status.minions {
+				var status bool = job_status.status[minion]
+				// var retcode float64 = job_status.errors[minion]
+
+				ch <- prometheus.NewMetricWithTimestamp(job_status.start_time,
+						prometheus.MustNewConstMetric(jobsStatus, prometheus.GaugeValue, map[bool]float64{true: 1, false: 0}[status], minion, job_status.function))
+
+			}*/
 		}
 	}
+
+	minion_last_event := make(map[string]uint64)
+	for _, detail := range jobs_details {
+		for _, minion := range detail.minions {
+			id, _ := strconv.ParseUint(detail.id[0:14], 10, 64)
+			if minion_last_event[minion] < id {
+				minion_last_event[minion] = id
+			}
+		}
+	}
+
+	log.Debug(minion_last_event)
+
+	for _, detail := range jobs_details {
+		for _, minion := range detail.minions {
+			id, _ := strconv.ParseUint(detail.id[0:14], 10, 64)
+			if minion_last_event[minion] == id {
+				var status bool = detail.status[minion]
+
+				ch <- prometheus.NewMetricWithTimestamp(detail.start_time,
+					prometheus.MustNewConstMetric(jobsStatus, prometheus.GaugeValue, map[bool]float64{true: 1, false: 0}[status], minion, detail.function))
+			}
+		}
+	}
+
 }

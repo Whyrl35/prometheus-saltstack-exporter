@@ -29,9 +29,7 @@ Masters metrics
 ```
 # HELP saltstack_master_up Master in up(1) or down(0)
 # TYPE saltstack_master_up gauge
-saltstack_master_up{master="10.0.1.5"} 1
-saltstack_master_up{master="saltmaster.cloud.whyrl.fr"} 1
-saltstack_master_up{master="saltmaster.whyrl.fr"} 1
+saltstack_master_up{master="saltmaster.local.domain"} 1
 ```
 
 Minions metrics
@@ -45,7 +43,17 @@ saltstack_minions_count 11
 Jobs metrics
 
 ```
-incoming
+# HELP saltstack_job_status Job status
+# TYPE saltstack_job_status gauge
+saltstack_job_status{function="state.apply",minion="minion1.local.domain"} 1 1675779556000
+saltstack_job_status{function="state.apply",minion="minion2.local.domain"} 1 1675776156000
+saltstack_job_status{function="state.apply",minion="minion3.local.domain"} 1 1675764177000
+saltstack_job_status{function="state.apply",minion="minion4.local.domain"} 1 1675784608000
+saltstack_job_status{function="state.apply",minion="minion5.local.domain"} 1 1675784718000
+saltstack_job_status{function="state.apply",minion="minion6.local.domain"} 1 1675783307000
+saltstack_job_status{function="state.apply",minion="minion7.local.domain"} 1 1675782089000
+saltstack_job_status{function="state.apply",minion="minion8.local.domain"} 1 1675789146000
+saltstack_job_status{function="state.apply",minion="minion9.local.domain"} 1 1675780960000
 ```
 
 ## Preparing saltstack API
